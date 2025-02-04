@@ -213,7 +213,7 @@ func (b *DefaultAuthenticator) Run(ctx context.Context, workers int) {
 	runner.Run(ctx, workers)
 }
 
-// Copied from https://github.com/kubernetes/apiserver/blob/v0.30.1/pkg/server/options/authentication.go#L407
+// Copied from https://github.com/kubernetes/apiserver/blob/v0.32.1/pkg/server/options/authentication.go#L436
 func createRequestHeaderConfig(client kubernetes.Interface) (*authenticatorfactory.RequestHeaderConfig, error) {
 	dynamicRequestHeaderProvider, err := newDynamicRequestHeaderController(client)
 	if err != nil {
@@ -223,13 +223,14 @@ func createRequestHeaderConfig(client kubernetes.Interface) (*authenticatorfacto
 	return &authenticatorfactory.RequestHeaderConfig{
 		CAContentProvider:   dynamicRequestHeaderProvider,
 		UsernameHeaders:     headerrequest.StringSliceProvider(headerrequest.StringSliceProviderFunc(dynamicRequestHeaderProvider.UsernameHeaders)),
+		UIDHeaders:          headerrequest.StringSliceProvider(headerrequest.StringSliceProviderFunc(dynamicRequestHeaderProvider.UIDHeaders)),
 		GroupHeaders:        headerrequest.StringSliceProvider(headerrequest.StringSliceProviderFunc(dynamicRequestHeaderProvider.GroupHeaders)),
 		ExtraHeaderPrefixes: headerrequest.StringSliceProvider(headerrequest.StringSliceProviderFunc(dynamicRequestHeaderProvider.ExtraHeaderPrefixes)),
 		AllowedClientNames:  headerrequest.StringSliceProvider(headerrequest.StringSliceProviderFunc(dynamicRequestHeaderProvider.AllowedClientNames)),
 	}, nil
 }
 
-// Copied from https://github.com/kubernetes/apiserver/blob/v0.30.1/pkg/server/options/authentication_dynamic_request_header.go#L42
+// Copied from https://github.com/kubernetes/apiserver/blob/v0.32.1/pkg/server/options/authentication_dynamic_request_header.go#L42
 func newDynamicRequestHeaderController(client kubernetes.Interface) (*options.DynamicRequestHeaderController, error) {
 	requestHeaderCAController, err := dynamiccertificates.NewDynamicCAFromConfigMapController(
 		"client-ca",
@@ -246,6 +247,7 @@ func newDynamicRequestHeaderController(client kubernetes.Interface) (*options.Dy
 		authenticationConfigMapNamespace,
 		client,
 		"requestheader-username-headers",
+		"requestheader-uid-headers",
 		"requestheader-group-headers",
 		"requestheader-extra-headers-prefix",
 		"requestheader-allowed-names",
