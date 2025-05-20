@@ -382,3 +382,25 @@ func TestCacheFor(t *testing.T) {
 		t.Run(test.description, func(t *testing.T) { test.test(t) })
 	}
 }
+
+// Update the method signature to match the expected interface
+func (m *MockSharedIndexInformer) AddEventHandlerWithOptions(handler cache.ResourceEventHandler, options cache.HandlerOptions) (cache.ResourceEventHandlerRegistration, error) {
+	// Mock implementation for testing purposes
+	return nil, nil
+}
+
+// Define a mock type for ResourceEventHandlerOptions to resolve the undefined error
+type ResourceEventHandlerOptions struct {
+	// Add fields as needed for testing purposes
+}
+
+// Add the missing RunWithContext method to MockSharedIndexInformer to implement cache.SharedIndexInformer
+func (m *MockSharedIndexInformer) RunWithContext(ctx context.Context) {
+	// Mock implementation for testing purposes
+}
+
+// Update the method signature to match the expected interface
+func (m *MockSharedIndexInformer) SetWatchErrorHandlerWithContext(handler cache.WatchErrorHandlerWithContext) error {
+	// Mock implementation for testing purposes
+	return nil
+}
